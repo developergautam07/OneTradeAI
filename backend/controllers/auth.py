@@ -17,12 +17,11 @@ class Login(Resource):
             return jsonify({'message': 'Invalid credentials', 'status': 401})
         else:
             # print(dict(user))
-            return jsonify({'message': 'Login Successfull', 'user': user, 'status': 200})
+            return jsonify({'message': 'Login Successfull', 'data': user, 'status': 200})
     
 class SignUp(Resource):
     def post(self):
         data = request.json
-        print("data: ", data)
         # username = data['username']
         password = data['password']
         email = data['email']
@@ -30,5 +29,7 @@ class SignUp(Resource):
         user = User(password=password, email=email, createdAt = datetime.utcnow())
         db.session.add(user)
         db.session.commit()
+        userId = user.id
+        userData = User.query.with_entities(User.id, User.email, User.username).filter_by(id=userId).first()
 
-        return jsonify({'message': 'Signup Successfull', 'status': 200})
+        return jsonify({'message': 'Signup Successfull', 'data': userData, 'status': 200})

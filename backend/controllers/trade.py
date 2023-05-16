@@ -13,12 +13,11 @@ class AddTrade(Resource):
         userId = requestedData['userId']
         symbol = requestedData['symbol']
         amount = requestedData['amount']
-        position = requestedData['position']
         profitLimit = requestedData['profitLimit']
         stopLoss = requestedData['stopLoss']
         createdAt = requestedData['time'] if requestedData['time'] else datetime.utcnow()
 
-        newTrade = Trades(userId=userId, symbol=symbol, amount=amount, position=position, profitLimit = profitLimit, stopLoss = stopLoss, status=0, createdAt = datetime.utcnow())
+        newTrade = Trades(userId=userId, symbol=symbol, amount=amount, position=0, profitLimit = profitLimit, stopLoss = stopLoss, status=0, createdAt = datetime.utcnow())
 
         db.session.add(newTrade)
         db.session.commit()

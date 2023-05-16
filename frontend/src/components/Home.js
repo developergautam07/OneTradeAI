@@ -119,6 +119,15 @@ function Home() {
 				</p>
 			</div>
 		</div>
+		<div class="row">
+			<div class="col-lg-12">
+				<h2 class="text-center text-white mt-5">Existing User?</h2>
+				<p class="text-center text-white">Login now and continue maximizing your profits with our algorithmic trading bot.</p>
+				<p class="text-center">
+					<a class ="btn btn-primary btn-lg" href="/login" role="button">Login Now</a>
+				</p>
+			</div>
+		</div>
 	</div>
 
 	{/* <!-- Footer --> */}

@@ -11,10 +11,14 @@ const Login = () => {
     e.preventDefault();
     try {
       const response = await axios.post('http://localhost:5000/login', { email, password });
-      const sessionData = response.data;
-      console.log(response.data);
+      const sessionData = response.data.data;
+      // console.log(response.data.data);
       localStorage.setItem('sessionData', JSON.stringify(sessionData));
-      window.location.href = '/dashboard';
+      if (sessionData){
+        window.location.href = '/dashboard';
+      } else {
+        setError("Invalid Credentials");
+      }
     } catch (err) {
       setError(err.response.data.message);
     }
@@ -95,7 +99,7 @@ const Login = () => {
                   />
                 </Form.Group>
 
-                <Button variant="primary" type="submit" href="/landing" className="btn-block">
+                <Button variant="primary" type="submit" className="btn-block">
                   Log in
                 </Button>
               </Form>

@@ -18,8 +18,16 @@ const Signup = () => {
 
     try {
       const response = await axios.post('http://127.0.0.1:5000/sign_up', signupData);
-      console.log(response.data);
+      // console.log(response.data);
+      const sessionData = response.data;
+      // console.log(response.data);
+      localStorage.setItem('sessionData', JSON.stringify(sessionData));
       // redirect user to dashboard or login page after successful signup
+      if (sessionData){
+        window.location.href = '/dashboard';
+      } else {
+        setError("Invalid Input");
+      }
     } catch (error) {
       console.log(error.response.data);
     }

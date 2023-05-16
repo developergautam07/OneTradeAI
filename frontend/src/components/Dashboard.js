@@ -15,9 +15,12 @@ const Dashboard = () => {
     // Fetch trade data from the API
     const fetchTrades = async () => {
       try {
-        const response = await fetch(`http://127.0.0.1:5000/recent_trades?userId=5`);
+        let sessionData = localStorage.getItem('sessionData');
+        let userId = JSON.parse(sessionData).id
+        // console.log("userId : ", userId)
+        const response = await fetch(`http://127.0.0.1:5000/recent_trades?userId=${userId}`);
         const data = await response.json();
-        // console.log('Fetched data:', data['data']);
+        // console.log('Fetched data:', data);
         setTrades(data['data']);
       } catch (error) {
         console.error('Error fetching trade data:', error);
@@ -34,15 +37,18 @@ const Dashboard = () => {
 
   const handleAddTrade = async (e) => {
     e.preventDefault();
-    
+    let sessionData = localStorage.getItem('sessionData');
+    let userId = JSON.parse(sessionData).id
     // Prepare the request body
     const requestBody = {
       symbol: newTrade.symbol,
       amount: parseFloat(newTrade.amount),
-      position: parseFloat(newTrade.profitPercent),
-      userId: 5,
+      profitLimit: parseFloat(newTrade.profitPercent),
+      stopLoss: parseFloat(newTrade.stopLoss),
+      userId: userId,
       time: new Date().toISOString(), // Use the current date and time
     };
+    // console.log("requestBody: ", requestBody)
   
     try {
       const response = await fetch('http://127.0.0.1:5000/add_trade', {
@@ -158,7 +164,7 @@ const Dashboard = () => {
                   <td>{trade.symbol}</td>
                   <td>{trade.amount}</td>
                   <td>{trade.position}</td>
-                  <td>{trade.status ? "Closed": "Active"}</td>
+                  <td>{trade.status == 2 ? "Closed" : trade.status == 1 ? "Active": "Pending"}</td>
                   <td>{trade.createdAt}</td>
                 </tr>
               ))}
