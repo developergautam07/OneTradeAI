@@ -27,6 +27,7 @@ RSI_LOWER_LIMIT = 30
 
 class PredictionModel(Resource):
     def get(self):
+        print("Hello")
         global SYMBOL
         tradesQuery = Trades.query.with_entities(Trades.id, Trades.symbol, Trades.position, Trades.amount, Trades.status, Trades.createdAt, Trades.userId, Trades.profitLimit, Trades.stopLoss).filter_by(status=0).order_by(asc(Trades.id)).first()
         if tradesQuery:
@@ -34,8 +35,9 @@ class PredictionModel(Resource):
             profit_limit = tradesQuery["profitLimit"]  # Desired profit limit (in percentage)
             stop_loss = tradesQuery["stopLoss"]   # Desired stop loss (in percentage)
             SYMBOL = tradesQuery["symbol"][0:3]+"-"+tradesQuery["symbol"][3:]
-            Trades.query.filter({Trades.id: tradesQuery['id']}).update({Trades.status: 1})
+            Trades.query.filter(Trades.id == tradesQuery['id']).update({Trades.status: 1})
             db.session.commit()
+            print("Inside if")
             while True:
                 # Read Data
                 data = yf.download(SYMBOL, start=START, end=END, period=PERIOD, interval=INTERVAL)
@@ -123,7 +125,7 @@ class PredictionModel(Resource):
                     print(market_direction)
                 
                 print(f"Current Profit/Loss: {current_profit:.2f}%")
-                Trades.query.filter({Trades.id: tradesQuery['id']}).update({Trades.position: current_profit})
+                Trades.query.filter(Trades.id == tradesQuery['id']).update({Trades.position: current_profit})
                 db.session.commit()
 
                 # # Check if profit limit or stop loss is achieved
@@ -136,7 +138,7 @@ class PredictionModel(Resource):
                 
                 time.sleep(5)
 
-            Trades.query.filter({Trades.id: tradesQuery['id']}).update({Trades.status: 2})
+            Trades.query.filter(Trades.id == tradesQuery['id']).update({Trades.status: 2})
             db.session.commit()
             return jsonify({'market_direction': market_direction})
         else:
